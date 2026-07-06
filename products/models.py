@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.text import slugify
+from PIL import Image
 
 
 class Category(models.Model):
@@ -30,7 +31,7 @@ class Product(models.Model):
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
-    image = models.ImageField()
+    image = models.ImageField(upload_to='products/')
     is_active = models.BooleanField(default=True)
     stock = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -50,3 +51,12 @@ class Product(models.Model):
                 counter += 1
 
         super().save(*args, **kwargs)
+
+        # if self.pk:
+        #     old_photo = Product.objects.get(pk=self.pk)
+
+        
+        # if self.image and self.image != old_photo:
+        #     img = Image.open(self.image.path)
+        #     img = img.resize((800, 800))
+        #     img.save(self.image.path)
