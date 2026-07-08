@@ -18,7 +18,7 @@ class ProductList(ListView):
         price_min = self.request.GET.get('price_min')
         price_max = self.request.GET.get('price_max')
         search = self.request.GET.get('search')
-
+        sort = self.request.GET.get('sort')
 
         if category:
             queryset = queryset.filter(category__name=category)
@@ -28,6 +28,7 @@ class ProductList(ListView):
             queryset = queryset.filter(price__lte=price_max)
         if search:
             queryset = queryset.filter(Q(name__icontains=search) | Q(description__icontains=search))
-
+        if sort:
+            queryset = queryset.order_by(sort)
 
         return queryset
