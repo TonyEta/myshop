@@ -20,6 +20,9 @@ class ProductList(ListView):
         search = self.request.GET.get('search')
         sort = self.request.GET.get('sort')
 
+        if sort == 'rating':
+            queryset = queryset.annotate(rating=Avg('reviews__rating'))
+            sort = '-rating'
         if category:
             queryset = queryset.filter(category__name=category)
         if price_min:
