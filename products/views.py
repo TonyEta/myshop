@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views.generic import ListView
-from django.db.models import Q
+from django.db.models import Q, Avg
 
 from .models import Product
 
@@ -12,8 +12,7 @@ class ProductList(ListView):
     paginate_by = 12
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-        queryset = queryset.filter(is_active=True)
+        queryset = super().get_queryset().filter(is_active=True)
 
         category = self.request.GET.get('category')
         price_min = self.request.GET.get('price_min')
