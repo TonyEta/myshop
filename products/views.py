@@ -13,6 +13,7 @@ class ProductList(ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
+        queryset = queryset.filter(is_active=True)
 
         category = self.request.GET.get('category')
         price_min = self.request.GET.get('price_min')
