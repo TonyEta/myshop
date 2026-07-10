@@ -5,7 +5,7 @@ from django.db.models import Q, Avg
 from .models import Product
 
 
-class ProductList(ListView):
+class ProductListView(ListView):
     model = Product
     template_name = 'products/home-products-list.html'
     context_object_name = 'products'

@@ -59,6 +59,12 @@ class Product(models.Model):
                 counter += 1
 
         super().save(*args, **kwargs)
+    
+    @property
+    def short_recomendation(self):
+        spec = self.specifications.filter(name='Recomendation_under_photo').first()
+
+        return spec.value if spec else ''
 
 class ProductSpecification(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='specifications')
