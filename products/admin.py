@@ -1,6 +1,10 @@
 from django.contrib import admin
-from .models import Product, Category
+from .models import Product, Category, ProductSpecification
 
+
+class ProductSpecificationInline(admin.TabularInline):
+    model = ProductSpecification
+    extra = 1
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
@@ -10,6 +14,7 @@ class ProductAdmin(admin.ModelAdmin):
     ordering = ('-created_at',)
     list_editable = ('is_active',)
     prepopulated_fields = {'slug': ('name',)}
+    inlines = [ProductSpecificationInline]
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
