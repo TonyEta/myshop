@@ -60,11 +60,10 @@ class Product(models.Model):
 
         super().save(*args, **kwargs)
 
-        # if self.pk:
-        #     old_photo = Product.objects.get(pk=self.pk)
-
-        
-        # if self.image and self.image != old_photo:
-        #     img = Image.open(self.image.path)
-        #     img = img.resize((800, 800))
-        #     img.save(self.image.path)
+class ProductSpecification(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='specifications')
+    name = models.CharField(max_length=100)
+    value = models.CharField(max_length=200)
+    
+    def __str__(self):
+        return f"{self.name}-{self.value}"
