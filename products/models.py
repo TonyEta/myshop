@@ -76,6 +76,10 @@ class ProductSpecification(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='specifications')
     name = models.CharField(max_length=100)
     value = models.CharField(max_length=200)
-    
+    is_visible = models.BooleanField(default=True, verbose_name='Відображення специфікації')
+
     def __str__(self):
         return f"{self.name}-{self.value}"
+    
+    def display_specifications(self):
+        pass 
