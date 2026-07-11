@@ -65,6 +65,12 @@ class Product(models.Model):
         spec = self.specifications.filter(name='Recomendation_under_photo').first()
 
         return spec.value if spec else ''
+    
+    @property
+    def price_tag(self):
+        spec = self.specifications.filter(name='Price_tag').first()
+
+        return spec.value if spec else ''
 
 class ProductSpecification(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='specifications')

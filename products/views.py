@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 from django.db.models import Q, Avg
 
 from .models import Product
@@ -9,7 +9,7 @@ class ProductListView(ListView):
     model = Product
     template_name = 'products/home-products-list.html'
     context_object_name = 'products'
-    paginate_by = 12
+    paginate_by = 6
 
     def get_queryset(self):
         queryset = super().get_queryset().filter(is_active=True).prefetch_related('specifications')
@@ -35,3 +35,8 @@ class ProductListView(ListView):
             queryset = queryset.order_by(sort)
 
         return queryset
+
+class ProductDetailView(DetailView):
+    model = Product
+    template_name= 'products/product-detail.html'
+    context_object_name = 'product'
