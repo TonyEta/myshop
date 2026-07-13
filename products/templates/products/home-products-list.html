@@ -14,6 +14,11 @@
             <div class="sidebar__section">
                 <h3 class="section-title">Keywords</h3>
                 <div class="keywords-list">
+                    {% for cat in query_categories %}
+                        <span class="keyword-tag" data-keyword="{{ cat }}">
+                            {{ cat }} <i class="fa-solid fa-xmark remove-keyword-icon"></i>
+                        </span>
+                    {% endfor %}
                 </div>
             </div>
 
@@ -21,19 +26,19 @@
                 <h3 class="section-title">Product Type</h3>
                 <div class="checkbox-group">
                     <label class="checkbox-container">Hops
-                        <input type="checkbox" data-keyword="Hops">
+                        <input type="checkbox" data-keyword="Hops" {% if 'Hops' in query_categories %}checked{% endif %}>
                         <span class="checkmark"></span>
                     </label>
                     <label class="checkbox-container">Malts
-                        <input type="checkbox" data-keyword="Malts">
+                        <input type="checkbox" data-keyword="Malts" {% if 'Malts' in query_categories %}checked{% endif %}>
                         <span class="checkmark"></span>
                     </label>
                     <label class="checkbox-container">Yeast
-                        <input type="checkbox" data-keyword="Yeast">
+                        <input type="checkbox" data-keyword="Yeast" {% if 'Yeast' in query_categories %}checked{% endif %}>
                         <span class="checkmark"></span>
                     </label>
                     <label class="checkbox-container">Adjuncts
-                        <input type="checkbox" data-keyword="Adjuncts">
+                        <input type="checkbox" data-keyword="Adjuncts" {% if 'Adjuncts' in query_categories %}checked{% endif %}>
                         <span class="checkmark"></span>
                     </label>
                 </div>
@@ -43,18 +48,18 @@
         <section class="products-area product-grid-section">
             <div class="search-sort-bar">
                 <div class="search-input-wrapper">
-                    <input type="text" placeholder="Search" class="search-input">
+                    <input type="text" placeholder="Search" class="search-input" value={{ query_search }}>
                     <button class="search-button" aria-label="Search">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
                 </div>
                 <div class="sort-options">
-                    <button class="sort-button active-sort" data-sort="created_at">
+                    <button class="sort-button {% if query_sort == 'created_at' %}active-sort{% endif %}" data-sort="created_at">
                         <span>New</span>
                     </button>
-                    <button class="sort-button" data-sort="price">Price ascending</button>
-                    <button class="sort-button" data-sort="-price">Price descending</button>
-                    <button class="sort-button" data-sort="rating">Rating</button>
+                    <button class="sort-button {% if query_sort == 'price' %}active-sort{% endif %}" data-sort="price">Price ascending</button>
+                    <button class="sort-button {% if query_sort == '-price' %}active-sort{% endif %}" data-sort="-price">Price descending</button>
+                    <button class="sort-button {% if query_sort == 'rating' %}active-sort{% endif %}" data-sort="rating">Rating</button>
                 </div>
             </div>
             
@@ -73,6 +78,36 @@
                     </a>
                 {% endfor %}
 
+            </div>
+
+            <div class="pagination">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}" class="pagination__link pagination__link--prev">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span>Previous</span>
+                    </a>
+                {% endif %}
+
+                <div class="pagination-list">
+                    {% for num in paginator.page_range %}
+                        {% if page_obj.number == num %}
+                            <a href="?page={{ num }}" class="pagination__link active">{{ num }}</a>
+                        {% else %}    
+                            <a href="?page={{ num }}" class="pagination__link">{{ num }}</a>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% comment %} {% if paginator.num_pages > 1 %}
+                        <a href="?page={{ paginator.num_pages }}" class="pagination__link">{{paginator.num_pages}}</a>
+                    {% endif %}
+                </div> {% endcomment %}
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}" class="pagination__link pagination__link--next">
+                        <span>Next</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                {% endif %}
             </div>
         </section>
     </div>

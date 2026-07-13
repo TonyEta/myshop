@@ -44,6 +44,7 @@ class Product(models.Model):
     class Meta:
         verbose_name = 'Продукт'
         verbose_name_plural = 'Продукти'
+        ordering = ['-created_at']
 
     def __str__(self):
         return self.name
@@ -70,7 +71,11 @@ class Product(models.Model):
     def price_tag(self):
         spec = self.specifications.filter(name='Price_tag').first()
 
+
         return spec.value if spec else ''
+    @property
+    def display_specifications(self):
+        return [spec for spec in self.specifications.all() if spec.is_visible]
 
 class ProductSpecification(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='specifications')
@@ -81,5 +86,3 @@ class ProductSpecification(models.Model):
     def __str__(self):
         return f"{self.name}-{self.value}"
     
-    def display_specifications(self):
-        pass 
