@@ -28,3 +28,7 @@ class RegistrationForm(forms.ModelForm):
         if password and confirm_password and password != confirm_password:
             raise forms.ValidationError("Паролі не співпадають!")
         return cleaned_data
+
+class LoginForm(forms.Form):
+    email = forms.CharField(attrs={'class': 'Input', 'placeholder': 'Ваш Email'})
+    password = forms.CharField(attrs={'class': 'Input', 'placeholder': 'Ваш пароль'})
