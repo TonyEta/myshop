@@ -39,7 +39,7 @@
 
         <!-- Block for unauthorized user -->
         <div class="header__auth-buttons" id="auth-guest">
-            <a href="login.html" class="button button--secondary">Sign in</a>
+            <a href="{% url 'users:login' %}" class="button button--secondary">Sign in</a>
             <a href="{% url 'users:register' %}" class="button button--primary">Register</a>
         </div>
 
@@ -50,6 +50,9 @@
             </a>
             <a href="cart.html" class="cart-icon" aria-label="Shopping Cart">
                 <img src="{% static 'img/icons/Shopping_bag.svg' %}" alt="Shopping Cart">
+            </a>
+            <a href="{% url 'users:logout' %}" class="button button--secondary" style="margin-left: 16px;">
+                    Logout
             </a>
 
         </div>

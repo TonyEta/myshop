@@ -19,7 +19,7 @@ def register_view(request):
 
             login(request, user)
 
-            return redirect('home-product-list')
+            return redirect('home')
     else:
         form = RegistrationForm()
 
@@ -37,7 +37,7 @@ def login_view(request):
             
             if user is not None:
                 login(request, user)
-                return redirect('home-product-list')
+                return redirect('home')
             else:
                 error_message = "Неправильний логін або пароль"
                 return render(request, 'users/login.html', {'form': form, 'error': error_message})
@@ -47,5 +47,6 @@ def login_view(request):
     return render(request, 'users/login.html', {'form': form})
 
 def logout_view(request):
+    print("--- ФУНКЦІЯ ВИХОДУ СПРАЦЮВАЛА! ---")
     logout(request)
-    return redirect('home-product-list')
+    return redirect('home')
