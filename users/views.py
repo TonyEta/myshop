@@ -18,7 +18,13 @@ def register_view(request):
             user.save()
 
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+            remember = request.POST.get('remember')
 
+            if remember == 'on':
+                request.session.set_expiry(120896000)
+            else:
+                request.session.set_expiry(0)
+                
             return redirect('home')
     else:
         form = RegistrationForm()
