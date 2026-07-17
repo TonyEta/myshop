@@ -24,7 +24,7 @@ def register_view(request):
                 request.session.set_expiry(120896000)
             else:
                 request.session.set_expiry(0)
-                
+
             return redirect('home')
     else:
         form = RegistrationForm()
@@ -56,3 +56,6 @@ def logout_view(request):
     print("--- ФУНКЦІЯ ВИХОДУ СПРАЦЮВАЛА! ---")
     logout(request)
     return redirect('home')
+
+def renew_password_view(request):
+    pass
