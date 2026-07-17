@@ -57,5 +57,3 @@ def logout_view(request):
     logout(request)
     return redirect('home')
 
-def renew_password_view(request):
-    pass
