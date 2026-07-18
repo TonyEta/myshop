@@ -41,10 +41,17 @@ def action_with_cart(request):
                 cart_item.quantity += 1
                 cart_item.save()
 
+        if cart_item.pk:
+            current_qty = cart_item.quantity
+            current_costs = cart_item.items_cost
+        else:
+            current_qty = 0
+            current_costs = 0
+
         return JsonResponse({
             'status': 'success',
-            'cart_item_quantity': cart_item.quantity,
-            'cart_item_costs': cart_item.items_cost,
+            'cart_item_quantity': current_qty,
+            'cart_item_costs': float(current_costs), 
             'cart_total_qty': cart.total_cart_quantity,
-            'cart_total_price': cart.total_cart_price
+            'cart_total_price': float(cart.total_cart_price)
         })
