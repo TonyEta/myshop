@@ -169,71 +169,71 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.closest('.accordion-item').classList.toggle('active');
             });
         }
-        // "Add to Cart" Button and Counter
-        const cartControls = document.querySelector('.cart-controls');
-        if (cartControls) {
-            const addToCartBtn = cartControls.querySelector('#add-to-cart-btn');
-            const quantityCounter = cartControls.querySelector('#quantity-counter');
-            const decreaseBtn = quantityCounter.querySelector('[data-action="decrease"]');
-            const increaseBtn = quantityCounter.querySelector('[data-action="increase"]');
-            const quantityValueSpan = quantityCounter.querySelector('.quantity-value');
-            let quantity = 0;
-            function updateView() {
-                if (quantity === 0) {
-                    addToCartBtn.classList.remove('is-hidden');
-                    quantityCounter.classList.add('is-hidden');
-                } else {
-                    addToCartBtn.classList.add('is-hidden');
-                    quantityCounter.classList.remove('is-hidden');
-                    quantityValueSpan.textContent = `${quantity} in cart`;
-                }
-            }
-            addToCartBtn.addEventListener('click', function() { quantity = 1; updateView(); });
-            decreaseBtn.addEventListener('click', function() { if (quantity > 0) { quantity--; updateView(); } });
-            increaseBtn.addEventListener('click', function() { quantity++; updateView(); });
-            updateView();
-        }
-    }
+    //     // "Add to Cart" Button and Counter
+    //     const cartControls = document.querySelector('.cart-controls');
+    //     if (cartControls) {
+    //         const addToCartBtn = cartControls.querySelector('#add-to-cart-btn');
+    //         const quantityCounter = cartControls.querySelector('#quantity-counter');
+    //         const decreaseBtn = quantityCounter.querySelector('[data-action="decrease"]');
+    //         const increaseBtn = quantityCounter.querySelector('[data-action="increase"]');
+    //         const quantityValueSpan = quantityCounter.querySelector('.quantity-value');
+    //         let quantity = 0;
+    //         function updateView() {
+    //             if (quantity === 0) {
+    //                 addToCartBtn.classList.remove('is-hidden');
+    //                 quantityCounter.classList.add('is-hidden');
+    //             } else {
+    //                 addToCartBtn.classList.add('is-hidden');
+    //                 quantityCounter.classList.remove('is-hidden');
+    //                 quantityValueSpan.textContent = `${quantity} in cart`;
+    //             }
+    //         }
+    //         addToCartBtn.addEventListener('click', function() { quantity = 1; updateView(); });
+    //         decreaseBtn.addEventListener('click', function() { if (quantity > 0) { quantity--; updateView(); } });
+    //         increaseBtn.addEventListener('click', function() { quantity++; updateView(); });
+    //         updateView();
+    //     }
+    // }
 
-    // --- Logic for Cart Page (cart.html) ---
-    const cartPageContent = document.querySelector('.cart-page-wrapper');
-    if (cartPageContent) {
-        const cartItemsList = document.getElementById('cart-items-list');
-        const cartTotalPriceElem = document.getElementById('cart-total-price');
-        function updateCartTotal() {
-            let total = 0;
-            document.querySelectorAll('.cart-item').forEach(item => {
-                const priceText = item.querySelector('[data-item-total-price]').textContent;
-                if (priceText) {
-                    total += parseFloat(priceText.replace('$', ''));
-                }
-            });
-            if (cartTotalPriceElem) cartTotalPriceElem.textContent = `$${total.toFixed(2)}`;
-        }
-        if (cartItemsList) {
-            cartItemsList.addEventListener('click', function(event) {
-                const cartItem = event.target.closest('.cart-item');
-                if (!cartItem) return;
-                const quantityElem = cartItem.querySelector('.quantity-value-cart');
-                const itemTotalElem = cartItem.querySelector('[data-item-total-price]');
-                const basePrice = parseFloat(cartItem.dataset.price);
-                let quantity = parseInt(quantityElem.textContent);
-                if (event.target.closest('[data-action="increase"]')) {
-                    quantity++;
-                } else if (event.target.closest('[data-action="decrease"]')) {
-                    quantity = quantity > 1 ? quantity - 1 : 0;
-                }
-                if (event.target.closest('[data-action="remove"]') || quantity === 0) {
-                    cartItem.remove();
-                } else {
-                    quantityElem.textContent = quantity;
-                    itemTotalElem.textContent = `$${(basePrice * quantity).toFixed(2)}`;
-                }
-                updateCartTotal();
-            });
-        }
-        updateCartTotal();
-    }
+    // // --- Logic for Cart Page (cart.html) ---
+    // const cartPageContent = document.querySelector('.cart-page-wrapper');
+    // if (cartPageContent) {
+    //     const cartItemsList = document.getElementById('cart-items-list');
+    //     const cartTotalPriceElem = document.getElementById('cart-total-price');
+    //     function updateCartTotal() {
+    //         let total = 0;
+    //         document.querySelectorAll('.cart-item').forEach(item => {
+    //             const priceText = item.querySelector('[data-item-total-price]').textContent;
+    //             if (priceText) {
+    //                 total += parseFloat(priceText.replace('$', ''));
+    //             }
+    //         });
+    //         if (cartTotalPriceElem) cartTotalPriceElem.textContent = `$${total.toFixed(2)}`;
+    //     }
+    //     if (cartItemsList) {
+    //         cartItemsList.addEventListener('click', function(event) {
+    //             const cartItem = event.target.closest('.cart-item');
+    //             if (!cartItem) return;
+    //             const quantityElem = cartItem.querySelector('.quantity-value-cart');
+    //             const itemTotalElem = cartItem.querySelector('[data-item-total-price]');
+    //             const basePrice = parseFloat(cartItem.dataset.price);
+    //             let quantity = parseInt(quantityElem.textContent);
+    //             if (event.target.closest('[data-action="increase"]')) {
+    //                 quantity++;
+    //             } else if (event.target.closest('[data-action="decrease"]')) {
+    //                 quantity = quantity > 1 ? quantity - 1 : 0;
+    //             }
+    //             if (event.target.closest('[data-action="remove"]') || quantity === 0) {
+    //                 cartItem.remove();
+    //             } else {
+    //                 quantityElem.textContent = quantity;
+    //                 itemTotalElem.textContent = `$${(basePrice * quantity).toFixed(2)}`;
+    //             }
+    //             updateCartTotal();
+    //         });
+    //     }
+    //     updateCartTotal();
+    // }
 
     // --- Logic for Account and Admin Pages ---
     const accountAdminWrapper = document.querySelector('.account-page-wrapper, .admin-page-wrapper');
@@ -291,4 +291,66 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     }
+    // ==========================================
+    // ЗВ'ЯЗОК З DJANGO БЕКЕНДОМ (КОШИК)
+    // ==========================================
+
+    // 1. Отримуємо CSRF токен для безпеки Django
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // 2. Функція відправки запиту на (бекенд)
+    function updateUserOrder(productId, action) {
+        const url = '/cart/update_item/';
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken'),
+            },
+            body: JSON.stringify({
+                'productId': productId,
+                'action': action
+            })
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log('Відповідь від сервера:', data);
+            // Перезавантажуємо сторінку, щоб Django відмалював нові актуальні дані з БД
+            location.reload(); 
+        });
+    }
+
+    // 3. Шукаємо всі кнопки, які можуть змінювати кошик
+    const updateBtns = document.querySelectorAll('.update-cart-btn, [data-action="remove"]');
+
+    // Вішаємо обробник кліку на кожну знайдену кнопку
+    updateBtns.forEach(button => {
+        button.addEventListener('click', function(event) {
+            // Запобігаємо стандартній поведінці кнопки
+            event.preventDefault(); 
+            
+            // Зчитуємо наші data-атрибути
+            const productId = this.dataset.product;
+            const action = this.dataset.action;
+            
+            console.log('Відправляємо на сервер -> Товар:', productId, 'Дія:', action);
+            
+            // Викликаємо функцію відправки
+            updateUserOrder(productId, action);
+        });
+    });
 });

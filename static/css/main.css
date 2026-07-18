@@ -1988,3 +1988,10 @@ body.user-logged-in .header__user-actions {
     height: 44px;
     padding: 0 32px;
 }
+
+.button--disabled, button:disabled {
+    background-color: #e0e0e0; 
+    color: #a0a0a0;            
+    border-color: #d0d0d0;
+    cursor: not-allowed;       
+}

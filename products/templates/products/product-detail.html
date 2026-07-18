@@ -23,17 +23,27 @@
         <div class="product-description">
           {{ product.description|linebreaks }}
         </div>
+
         <div class="cart-controls">
-          <button class="button button--primary add-to-cart-button" id="add-to-cart-btn">
-            <i class="fa-solid fa-cart-shopping"></i>
-            <span>Add to Cart</span>
-          </button>
+          {% if product.stock > 0 %}
+            <button class="button button--primary add-to-cart-button" id="add-to-cart-btn" data-product="{{ product.id }}" data-action="add">
+              <i class="fa-solid fa-cart-shopping"></i>
+              <span>Add to Cart</span>
+            </button>
+          {% else %}
+            <button class="button button--disabled add-to-cart-button" disabled aria-label="Product out of stock">
+              <i class="fa-solid fa-boxes-empty"></i>
+              <span>Out of Stock</span>
+            </button>
+          {% endif %}
+
           <div class="quantity-counter is-hidden" id="quantity-counter">
-            <button class="quantity-btn" data-action="decrease" aria-label="Decrease quantity"><i class="fa-solid fa-minus"></i></button>
+            <button class="quantity-btn update-cart-btn" data-action="decrease" aria-label="Decrease quantity" data-product="{{ product.id }}"><i class="fa-solid fa-minus"></i></button>
             <span class="quantity-value">1 in cart</span>
-            <button class="quantity-btn" data-action="increase" aria-label="Increase quantity"><i class="fa-solid fa-plus"></i></button>
+            <button class="quantity-btn update-cart-btn" data-action="increase" aria-label="Increase quantity" data-product="{{ product.id }}"><i class="fa-solid fa-plus"></i></button>
           </div>
         </div>
+
       </div>
     </section>
 
