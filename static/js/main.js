@@ -292,10 +292,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     // ==========================================
-    // ЗВ'ЯЗОК З DJANGO БЕКЕНДОМ (КОШИК)
+    // ЗВ'ЯЗОК З DJANGO БЕКЕНДОМ (КОШИК) - ОНОВЛЕНО
     // ==========================================
 
-    // 1. Отримуємо CSRF токен для безпеки Django
     function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
@@ -311,9 +310,9 @@ document.addEventListener('DOMContentLoaded', function() {
         return cookieValue;
     }
 
-    // 2. Функція відправки запиту на (бекенд)
-    function updateUserOrder(productId, action) {
-        const url = '/cart/update_item/';
+    // Додаємо параметр 'button', щоб знати, який саме елемент видалити чи змінити
+    function updateUserOrder(button, productId, action) {
+        const url = '/cart/action/'; // Переконайся, що URL збігається з твоїм urls.py
 
         fetch(url, {
             method: 'POST',
@@ -329,28 +328,43 @@ document.addEventListener('DOMContentLoaded', function() {
         .then((response) => response.json())
         .then((data) => {
             console.log('Відповідь від сервера:', data);
-            // Перезавантажуємо сторінку, щоб Django відмалював нові актуальні дані з БД
-            location.reload(); 
+
+            if (data.status === 'success') {
+                // 1. Знаходимо рядок товару, в якому натиснули кнопку
+                const cartItem = button.closest('.cart-item');
+                
+                // 2. Якщо кількість 0 — видаляємо весь рядок з кошика
+                if (data.cart_item_quantity === 0) {
+                    cartItem.remove();
+                } else {
+                    // 3. Якщо товар залишився — оновлюємо цифри в цьому рядку
+                    const quantityElem = cartItem.querySelector('.quantity-value-cart');
+                    const priceElem = cartItem.querySelector('[data-item-total-price]');
+                    
+                    if (quantityElem) quantityElem.innerText = data.cart_item_quantity;
+                    if (priceElem) priceElem.innerText = data.cart_item_costs;
+                }
+
+                // 4. Оновлюємо загальну суму внизу сторінки
+                const totalElem = document.getElementById('cart-total-price');
+                if (totalElem) {
+                    totalElem.innerText = data.cart_total_price;
+                }
+            }
         });
     }
 
-    // 3. Шукаємо всі кнопки, які можуть змінювати кошик
-    const updateBtns = document.querySelectorAll('.update-cart-btn, [data-action="remove"]');
+    // Слухаємо всі кнопки
+    const updateBtns = document.querySelectorAll('.update-cart-btn, .button--remove');
 
-    // Вішаємо обробник кліку на кожну знайдену кнопку
     updateBtns.forEach(button => {
         button.addEventListener('click', function(event) {
-            // Запобігаємо стандартній поведінці кнопки
             event.preventDefault(); 
             
-            // Зчитуємо наші data-атрибути
             const productId = this.dataset.product;
             const action = this.dataset.action;
             
-            console.log('Відправляємо на сервер -> Товар:', productId, 'Дія:', action);
-            
-            // Викликаємо функцію відправки
-            updateUserOrder(productId, action);
+            // Передаємо 'this' (саму кнопку), щоб функція знала, що оновити
+            updateUserOrder(this, productId, action);
         });
     });
-});
