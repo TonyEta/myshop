@@ -37,6 +37,9 @@ class OrderItem(models.Model):
     quantity = models.PositiveIntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
 
+    class Meta:
+        unique_together = ('cart', 'product')
+
     def __str__(self):
         return f"{self.product.name}-total_sum-{self.quantity * self.price}"
     
@@ -45,3 +48,28 @@ class OrderItem(models.Model):
             self.price = self.product.price
 
         super().save(*args, **kwargs)
+
+class Cart(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+    session_key = models.CharField(max_length=100, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    @property
+    def total_cart_price(self):
+        total_price = 0
+        for item in self.cart_items:
+            total_price += item.items_cost
+
+        return total_price
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='cart_items')
+    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    quantity = models.PositiveIntegerField(default=1)
+
+    @property
+    def items_cost(self):
+        price = self.product.price * self.quantity
+
+        return price
