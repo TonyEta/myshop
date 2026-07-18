@@ -1,6 +1,7 @@
 import json
 
 from django.shortcuts import render
+from django.http import JsonResponse
 from .models import Cart, CartItem
 from products.models import Product
 
@@ -24,12 +25,26 @@ def action_with_cart(request):
         cart_item, created = CartItem.objects.get_or_create(cart=cart, product=target_item)
 
         if user_action == 'add':
-            
+            if not created and cart_item.quantity + 1 <= target_item.stock:
+                cart_item.quantity += 1
+                cart_item.save()
         elif user_action == 'remove':
-            pass
+            cart_item.delete()
         elif user_action == 'decrease':
-            pass 
+            if cart_item.quantity > 1:
+                cart_item.quantity -= 1
+                cart_item.save()
+            else:
+                cart_item.delete()
         elif user_action == 'increase':
-            pass
-        else:
-            pass 
+            if cart_item.quantity + 1 <= target_item.stock:
+                cart_item.quantity += 1
+                cart_item.save()
+
+        return JsonResponse({
+            'status': 'success',
+            'cart_item_quantity': cart_item.quantity,
+            'cart_item_costs': cart_item.items_cost,
+            'cart_total_qty': cart.total_cart_quantity,
+            'cart_total_price': cart.total_cart_price
+        })
