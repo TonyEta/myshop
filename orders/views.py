@@ -6,6 +6,17 @@ from .models import Cart, CartItem
 from products.models import Product
 
 
+def cart_view(request):
+    if request.user.is_authenticated:
+        cart, _ = Cart.objects.get_or_create(user=request.user)
+    else:
+        if not request.session.session_key:
+            request.session.create()
+        cart, _ = Cart.objects.get_or_create(session_key=request.session.session_key)
+
+    return render(request, 'orders/cart.html', {'cart': cart})
+
+
 def action_with_cart(request):
     if request.method == 'POST':
         body = json.loads(request.body)

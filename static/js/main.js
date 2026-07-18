@@ -291,6 +291,23 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     }
+
+    const addToCartBtn = document.getElementById('add-to-cart-btn');
+    const quantityCounter = document.getElementById('quantity-counter');
+
+    if (addToCartBtn) {
+        addToCartBtn.addEventListener('click', function() {
+            // Ховаємо кнопку Add to Cart
+            this.classList.add('is-hidden');
+            // Показуємо лічильник
+            if (quantityCounter) {
+                quantityCounter.classList.remove('is-hidden');
+                // Можна тут оновити текст лічильника, якщо потрібно
+                const valueSpan = quantityCounter.querySelector('.quantity-value');
+                if (valueSpan) valueSpan.innerText = '1 in cart';
+            }
+        });
+        }
     // ==========================================
     // ЗВ'ЯЗОК З DJANGO БЕКЕНДОМ (КОШИК) - ОНОВЛЕНО
     // ==========================================
@@ -312,7 +329,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Додаємо параметр 'button', щоб знати, який саме елемент видалити чи змінити
     function updateUserOrder(button, productId, action) {
-        const url = '/cart/action/'; // Переконайся, що URL збігається з твоїм urls.py
+        const url = '/cart/action/'; 
 
         fetch(url, {
             method: 'POST',
@@ -330,22 +347,23 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('Відповідь від сервера:', data);
 
             if (data.status === 'success') {
-                // 1. Знаходимо рядок товару, в якому натиснули кнопку
+                // 1. БЕЗПЕЧНИЙ ПОШУК: Знаходимо рядок товару, якщо ми на сторінці кошика
                 const cartItem = button.closest('.cart-item');
                 
-                // 2. Якщо кількість 0 — видаляємо весь рядок з кошика
-                if (data.cart_item_quantity === 0) {
-                    cartItem.remove();
-                } else {
-                    // 3. Якщо товар залишився — оновлюємо цифри в цьому рядку
-                    const quantityElem = cartItem.querySelector('.quantity-value-cart');
-                    const priceElem = cartItem.querySelector('[data-item-total-price]');
-                    
-                    if (quantityElem) quantityElem.innerText = data.cart_item_quantity;
-                    if (priceElem) priceElem.innerText = data.cart_item_costs;
+                // 2. Виконуємо маніпуляції з DOM тільки якщо ми на сторінці кошика (cartItem існує)
+                if (cartItem) {
+                    if (data.cart_item_quantity === 0) {
+                        cartItem.remove();
+                    } else {
+                        const quantityElem = cartItem.querySelector('.quantity-value-cart');
+                        const priceElem = cartItem.querySelector('[data-item-total-price]');
+                        
+                        if (quantityElem) quantityElem.innerText = data.cart_item_quantity;
+                        if (priceElem) priceElem.innerText = data.cart_item_costs;
+                    }
                 }
 
-                // 4. Оновлюємо загальну суму внизу сторінки
+                // 3. Оновлюємо загальну суму (вона є тільки в кошику, тому перевіряємо на існування)
                 const totalElem = document.getElementById('cart-total-price');
                 if (totalElem) {
                     totalElem.innerText = data.cart_total_price;
@@ -355,7 +373,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Слухаємо всі кнопки
-    const updateBtns = document.querySelectorAll('.update-cart-btn, .button--remove');
+    const updateBtns = document.querySelectorAll('.update-cart-btn, .button--remove, .add-to-cart-button');
 
     updateBtns.forEach(button => {
         button.addEventListener('click', function(event) {
