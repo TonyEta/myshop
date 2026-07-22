@@ -14,7 +14,7 @@ class ProductListView(ListView):
     def get_queryset(self):
         queryset = super().get_queryset().filter(is_active=True).prefetch_related('specifications')
 
-        category = self.request.GET.get('category')
+        categories = self.request.GET.getlist('category')
         price_min = self.request.GET.get('price_min')
         price_max = self.request.GET.get('price_max')
         search = self.request.GET.get('search')
@@ -24,8 +24,8 @@ class ProductListView(ListView):
         if sort == 'rating':
             queryset = queryset.annotate(rating=Avg('reviews__rating'))
             sort = '-rating'
-        if category:
-            queryset = queryset.filter(category__name=category)
+        if categories:
+            queryset = queryset.filter(category__name__in=categories)
         if price_min:
             queryset = queryset.filter(price__gte=price_min)
         if price_max:

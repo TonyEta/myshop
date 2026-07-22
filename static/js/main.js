@@ -169,6 +169,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.closest('.accordion-item').classList.toggle('active');
             });
         }
+    }
     //     // "Add to Cart" Button and Counter
     //     const cartControls = document.querySelector('.cart-controls');
     //     if (cartControls) {
@@ -292,22 +293,22 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    const addToCartBtn = document.getElementById('add-to-cart-btn');
-    const quantityCounter = document.getElementById('quantity-counter');
+    // const addToCartBtn = document.getElementById('add-to-cart-btn');
+    // const quantityCounter = document.getElementById('quantity-counter');
 
-    if (addToCartBtn) {
-        addToCartBtn.addEventListener('click', function() {
-            // Ховаємо кнопку Add to Cart
-            this.classList.add('is-hidden');
-            // Показуємо лічильник
-            if (quantityCounter) {
-                quantityCounter.classList.remove('is-hidden');
-                // Можна тут оновити текст лічильника, якщо потрібно
-                const valueSpan = quantityCounter.querySelector('.quantity-value');
-                if (valueSpan) valueSpan.innerText = '1 in cart';
-            }
-        });
-        }
+    // if (addToCartBtn) {
+    //     addToCartBtn.addEventListener('click', function() {
+    //         // Ховаємо кнопку Add to Cart
+    //         this.classList.add('is-hidden');
+    //         // Показуємо лічильник
+    //         if (quantityCounter) {
+    //             quantityCounter.classList.remove('is-hidden');
+    //             // Можна тут оновити текст лічильника, якщо потрібно
+    //             const valueSpan = quantityCounter.querySelector('.quantity-value');
+    //             if (valueSpan) valueSpan.innerText = '1 in cart';
+    //         }
+    //     });
+    //     }
     // ==========================================
     // ЗВ'ЯЗОК З DJANGO БЕКЕНДОМ (КОШИК) - ОНОВЛЕНО
     // ==========================================
@@ -329,7 +330,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Додаємо параметр 'button', щоб знати, який саме елемент видалити чи змінити
     function updateUserOrder(button, productId, action) {
-        const url = '/cart/action/'; 
+        const url = '/orders/cart/update_item/'; 
 
         fetch(url, {
             method: 'POST',
@@ -344,33 +345,45 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then((response) => response.json())
         .then((data) => {
-            console.log('Відповідь від сервера:', data);
-
             if (data.status === 'success') {
-                // 1. БЕЗПЕЧНИЙ ПОШУК: Знаходимо рядок товару, якщо ми на сторінці кошика
-                const cartItem = button.closest('.cart-item');
-                
-                // 2. Виконуємо маніпуляції з DOM тільки якщо ми на сторінці кошика (cartItem існує)
+                // Шукаємо, на якій ми сторінці
+                const cartItem = button.closest('.cart-item'); // Сторінка кошика
+                const cartControls = button.closest('.cart-controls'); // Сторінка товару
+
                 if (cartItem) {
+                    // Логіка для сторінки КОШИКА
                     if (data.cart_item_quantity === 0) {
                         cartItem.remove();
                     } else {
                         const quantityElem = cartItem.querySelector('.quantity-value-cart');
                         const priceElem = cartItem.querySelector('[data-item-total-price]');
-                        
                         if (quantityElem) quantityElem.innerText = data.cart_item_quantity;
                         if (priceElem) priceElem.innerText = data.cart_item_costs;
                     }
+                } else if (cartControls) {
+                    // Логіка для сторінки ТОВАРУ
+                    const addBtn = cartControls.querySelector('#add-to-cart-btn');
+                    const counter = cartControls.querySelector('#quantity-counter');
+                    const quantityElem = cartControls.querySelector('.quantity-value');
+
+                    if (data.cart_item_quantity === 0) {
+                        if (addBtn) addBtn.classList.remove('is-hidden');
+                        if (counter) counter.classList.add('is-hidden');
+                    } else {
+                        if (addBtn) addBtn.classList.add('is-hidden');
+                        if (counter) counter.classList.remove('is-hidden');
+                        if (quantityElem) quantityElem.innerText = `${data.cart_item_quantity} in cart`;
+                    }
                 }
 
-                // 3. Оновлюємо загальну суму (вона є тільки в кошику, тому перевіряємо на існування)
-                const totalElem = document.getElementById('cart-total-price');
-                if (totalElem) {
-                    totalElem.innerText = data.cart_total_price;
-                }
+            // Оновлюємо загальну суму (тільки для кошика)
+            const totalElem = document.getElementById('cart-total-price');
+            if (totalElem) {
+                totalElem.innerText = data.cart_total_price;
             }
-        });
-    }
+        }
+    });
+}
 
     // Слухаємо всі кнопки
     const updateBtns = document.querySelectorAll('.update-cart-btn, .button--remove, .add-to-cart-button');
@@ -386,3 +399,4 @@ document.addEventListener('DOMContentLoaded', function() {
             updateUserOrder(this, productId, action);
         });
     });
+});
