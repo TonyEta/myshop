@@ -3,7 +3,8 @@ from django.views.generic import ListView, DetailView
 from django.db.models import Q, Avg
 
 from .models import Product
-
+from orders.models import CartItem
+from tools import get_or_create_cart
 
 class ProductListView(ListView):
     model = Product
@@ -57,3 +58,11 @@ class ProductDetailView(DetailView):
     model = Product
     template_name= 'products/product-detail.html'
     context_object_name = 'product'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        cart = get_or_create_cart(self.request)
+        cart_item = CartItem.objects.filter(Q(cart=cart) & Q(product=self.object)).first()
+        context['cart_item'] = cart_item
+
+        return context

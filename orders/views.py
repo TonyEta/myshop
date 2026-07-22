@@ -3,16 +3,8 @@ from django.shortcuts import redirect, get_object_or_404
 from .models import Cart, CartItem
 from products.models import Product
 
+from tools import get_or_create_cart
 
-def get_or_create_cart(request):
-    if request.user.is_authenticated:
-        cart, _ = Cart.objects.get_or_create(user=request.user)
-    else:
-        if not request.session.session_key:
-            request.session.create()
-        cart, _ = Cart.objects.get_or_create(session_key=request.session.session_key)
-
-    return cart
 
 def action_with_cart(request):
     if request.method == 'POST':
